@@ -1,9 +1,20 @@
 import { test, expect, type Response } from '@playwright/test';
 
 test.describe('Game Listing and Navigation', () => {
-  test('should display games with titles on index page', async ({ page }) => {
+  test('should display catalog summary and games with titles on the homepage', async ({ page }) => {
     await test.step('Navigate to homepage', async () => {
       await page.goto('/');
+    });
+
+    await test.step('Verify catalog summary is visible', async () => {
+      const summary = page.getByTestId('catalog-summary');
+      await expect(summary).toBeVisible();
+
+      const totalGames = page.getByTestId('catalog-total-games');
+      const averageRating = page.getByTestId('catalog-average-rating');
+
+      await expect(totalGames).toContainText(/\d+/);
+      await expect(averageRating).toContainText(/\d+(\.\d+)?\/5|No rated games yet/i);
     });
 
     await test.step('Verify games grid is visible', async () => {
